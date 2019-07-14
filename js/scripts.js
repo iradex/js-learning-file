@@ -23,7 +23,7 @@ var repository = [
 
 for (var i=0; i<repository.length; i++) {
     if (repository[i].height<0.6) { 
-        document.write(repository[i].name + ' (height: ' + repository[i].height + ') <br> <br> ' );
+        document.write(' <div class="short"> ' + repository[i].name + ' (height: ' + repository[i].height + ') </div> <br> <br> ' );
     } else {
         document.write(repository[i].name + ' (height: ' + repository[i].height + ') - Wow, that\'s big!  <br> <br> ');
     }
