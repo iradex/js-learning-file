@@ -28,3 +28,9 @@ for (var i=0; i<repository.length; i++) {
         document.write(repository[i].name + ' (height: ' + repository[i].height + ') - Wow, that\'s big!  <br> <br> ');
     }
 }
+
+function printPokemon(Pokemon) {
+    document.write(Pokemon.name + ' (height: ' + Pokemon.height + ') <br> <br> ' )
+}
+
+repository.forEach(printPokemon);
