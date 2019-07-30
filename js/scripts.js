@@ -33,8 +33,6 @@ var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
     }
 
     
-
-
     function addListItem(pokemon) {
         var $list = document.querySelector('.pokemon-list');
         var listItem = document.createElement('li');
@@ -44,7 +42,7 @@ var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
         listItem.appendChild(button);
         $list.appendChild(listItem);
         button.addEventListener('click', function(){
-            showDetails(pokemon.name);
+            showDetails(pokemon);
         });
     }
 
