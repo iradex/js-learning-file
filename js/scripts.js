@@ -1,27 +1,24 @@
 var pokemonRepository = (function () {
 
-var repository = [
-    {
-        name: 'diglet',
-        height: 0.2,
-        type: ['ground']
-    },
-    { 
-        name: 'jigglypuff',
-        height: 0.6,
-        type: ['fairy', 'normal']
-    },
-    {
-        name: 'magnemite',
-        height: 0.3,
-        type: ['electric', 'steel']
-    },
-    {
-        name: 'oddish',
-        height: 0.5,
-        type: ['grass', 'poison']
+var repository = []; 
+var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
+
+  
+    function loadList() {
+      return fetch(apiUrl).then(function (response) {
+        return response.json();
+      }).then(function (json) {
+        json.results.forEach(function (item) {
+          var pokemon = {
+            name: item.name,
+            detailsUrl: item.url
+          };
+          add(pokemon);
+        });
+      }).catch(function (e) {
+        console.error(e);
+      })
     }
-    ]; 
     
     function add(item) {
         if (typeof item ==='object') {
@@ -35,9 +32,8 @@ var repository = [
         return repository;
     }
 
-    function showDetails(pokemon) {
-        console.log(pokemon);
-    }
+    
+
 
     function addListItem(pokemon) {
         var $list = document.querySelector('.pokemon-list');
@@ -52,23 +48,40 @@ var repository = [
         });
     }
 
+    function loadDetails(item) {
+        var url = item.detailsUrl;
+        return fetch(url).then(function (response) {
+          return response.json();
+        }).then(function (details) {
+          item.imageUrl = details.sprites.front_default;
+          item.height = details.height;
+          item.types = Object.keys(details.types);
+        }).catch(function (e) {
+          console.error(e);
+        });
+      }
+
     return {
         add: add,
         getAll: getAll,
-        addListItem: addListItem,
-    };
+        loadList: loadList,
+        loadDetails: loadDetails,
+        addListItem: addListItem
+    };    
 
 })();
 
-/*for (var i=0; i<pokemonRepository.getAll().length; i++) {
-    if (pokemonRepository.getAll()[i].height<0.6) { 
-        document.write(pokemonRepository.getAll()[i].name + ' (height: ' + pokemonRepository.getAll()[i].height + ') </div> <br> <br> ' );
-    } else {
-        document.write(pokemonRepository.getAll()[i].name + ' (height: ' + pokemonRepository.getAll()[i].height + ') - Wow, that\'s big!  <br> <br> ');
-    }
-}*/
+pokemonRepository.loadList().then(function() {
+    pokemonRepository.getAll().forEach(pokemonRepository.addListItem);
+  });
 
-pokemonRepository.getAll().forEach(pokemonRepository.addListItem); // The ".getAll()" is returning the entire repository array, while the "forEach" iterates over all items of the array with the addListItem Method)
+  function showDetails(item) {
+    pokemonRepository.loadDetails(item).then(function () {
+      console.log(item);  
+    });
+  }
+
+
 
 
 
