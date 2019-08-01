@@ -6,13 +6,14 @@ var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
   
     function loadList() {
       return fetch(apiUrl).then(function (response) {
-        return response.json();
+        return response.json(); // the response by "fetch" is not the actual data we are looking for - instead, it is an object that holds the .json() method. We need to parse the object with it to get the data. This returns another promise.
       }).then(function (json) {
-        json.results.forEach(function (item) {
+        console.log(json);
+        json.results.forEach(function (item) { // "json.results" refers to the property "results" - which is an array, for which we use the forEach loop
           var pokemon = {
             name: item.name,
             detailsUrl: item.url
-          };
+          };    
           add(pokemon);
         });
       }).catch(function (e) {
@@ -75,9 +76,61 @@ pokemonRepository.loadList().then(function() {
 
   function showDetails(item) {
     pokemonRepository.loadDetails(item).then(function () {
-      console.log(item);  
+      showModal(item.name, "Height: " + item.height + " inches", item.imageUrl)  
     });
   }
+
+
+  function showModal(title, text, imageLink) {
+    var $modalContainer = document.querySelector('#modal-container');
+    
+    $modalContainer.innerHTML="";
+    
+    var modal = document.createElement('div');
+    modal.classList.add("modal");
+    
+    var $closeButton = document.createElement('button');
+    $closeButton.classList.add('modal-close');
+    $closeButton.innerText = "Close";
+    $closeButton.addEventListener("click", removeModal)
+    
+    var $title = document.createElement("h1");
+    $title.innerText = title;
+    var $content = document.createElement("p");
+    $content.innerText = text;
+    var $picture = document.createElement("img")
+    $picture.src=imageLink;
+    $picture.classList.add("poke-pic")
+
+    modal.appendChild($closeButton);
+    modal.appendChild($title);
+    modal.appendChild($content);
+    modal.appendChild($picture);
+    $modalContainer.appendChild(modal);
+    $modalContainer.classList.add("is-visible");
+
+    function removeModal() {
+      var modalContainer = document.querySelector("#modal-container");
+      modalContainer.classList.remove("is-visible");
+    }
+  
+    window.addEventListener('keydown', (e) => {
+      var $modalContainer = document.querySelector('#modal-container');
+      if (e.key === 'Escape' && $modalContainer.classList.contains('is-visible')) {
+        removeModal();  
+      }
+    });
+  
+    $modalContainer.addEventListener('click', (e) => {
+      var target = e.target;
+      if (target === $modalContainer) {
+        removeModal();
+      }
+    });
+    
+  } 
+
+  
 
 
 
